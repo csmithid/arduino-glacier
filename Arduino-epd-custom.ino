@@ -8,12 +8,12 @@ float center = 252; //
 float spread = 100; // Use to place text on 800x600 screen.
 float indent = 20;  //
 
-String e = String();
-String p = String("why cant i");
+String e = String(); //empty/waste
+String p = String("why cant i"); //prompt
 
-String a = String();
-String b = String();
-String c = String();
+String a = String(); //first output
+String b = String(); //second output
+String c = String(); //third output
 
 
 byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED };
@@ -22,7 +22,7 @@ IPAddress ip(192, 168, 0, 177);
 
 EthernetClient client;
 
-void get_google()
+void get_google(String p)
 {
   Serial.begin(9600);
   //while (!Serial) {
@@ -63,6 +63,7 @@ void get_google()
     char r  = client.read();
     if (!client.connected()) {
       Serial.println("disconnecting.");
+      Serial.end();
       client.stop();
       break;
     }
@@ -98,23 +99,6 @@ String cleanString(String input){
   return input;
 }
 
-void write_google()
-{
-  epd_init();
-  epd_wakeup();
-  epd_set_memory(MEM_NAND);
-
-  epd_set_color(BLACK,WHITE);
-  epd_clear();
-
-  epd_set_en_font(ASCII48);
-  epd_disp_string(a.c_str(),indent,center-spread);
-  epd_disp_string(b.c_str(),indent,center);
-  epd_disp_string(c.c_str(),indent,center+spread);
-
-  epd_udpate();
-}
-
 void epd_stop()
 {
   char flag = 0;
@@ -135,6 +119,25 @@ void epd_stop()
   }
 }
 
+void write_google()
+{
+  epd_init();
+  epd_wakeup();
+  epd_set_memory(MEM_NAND);
+
+  epd_set_color(BLACK,WHITE);
+  epd_clear();
+
+  epd_set_en_font(ASCII48);
+  epd_disp_string(a.c_str(),indent,center-spread);
+  epd_disp_string(b.c_str(),indent,center);
+  epd_disp_string(c.c_str(),indent,center+spread);
+
+  epd_udpate();
+
+  ep_stop();
+}
+
 void setup()
 {
   pinMode(led, OUTPUT);
@@ -143,9 +146,7 @@ void setup()
 
 void loop()
 {
-  get_google();
+  get_google(p);
 
   write_google();
-
-  epd_stop();
 }
